@@ -4,7 +4,7 @@
     margin: 0;
 }
 
-h1, h2, h3, p {
+h1, h2, h3, p, label {
     font-family: "Winky Sans", sans-serif;
 }
 
@@ -113,6 +113,17 @@ h1, h2, h3, p {
     gap: 1rem;
 }
 
+.add-todo {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: color 0.3s ease-in-out
+}
+
+.add-todo:hover {
+    color: rgb(171, 171, 171)
+}
+
 .todo {
     width: 100%;
     box-sizing: border-box;
@@ -170,3 +181,43 @@ h1, h2, h3, p {
     align-items: center;
     gap: 0.5rem;
 }
+
+.todo-dialog {
+    border: 1px solid grey;
+    border-radius: 1rem;
+    top: calc(50%);
+    left: calc(50%);
+    transform: translate(-50%, -50%);
+}
+
+.create-todo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.create-todo form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.create-todo form input {
+    border-radius: 1rem;
+    border: 1px solid black
+}
+
+.create-todo button {
+    box-sizing: border-box;
+    padding: 0.5rem 1rem 0.5rem 1rem;
+    color: white;
+    background-color: #62554d;
+    border: none;
+    border-radius: 1rem;
+    cursor: pointer;
+}
+
+.create-todo button:hover {
+    background-color: #9b887d;
+}
+
