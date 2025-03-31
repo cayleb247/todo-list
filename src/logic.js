@@ -1,9 +1,15 @@
+
+
 class ToDoItem {
     constructor(name, date, details, priority) {
         this.name = name;
         this.date = date;
         this.details = details;
         this.priority = priority;
+        this.completed = false;
+    }
+    completeToDo() {
+        this.completed = true;
     }
 }
 
