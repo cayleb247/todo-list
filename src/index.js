@@ -1,78 +1,20 @@
 import "./styles.css";
 
-// Create "X" SVG
+import { createXSVG, createListIcon } from "./create-svg";
 
-function createXSVG() {
-    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-    svg.setAttribute("width", "24");
-    svg.setAttribute("height", "24");
-    svg.setAttribute("viewBox", "0 0 24 24");
-    svg.setAttribute("fill", "none");
-    svg.setAttribute("stroke", "currentColor");
-    svg.setAttribute("stroke-width", "2");
-    svg.setAttribute("stroke-linecap", "round");
-    svg.setAttribute("stroke-linejoin", "round");
-    svg.setAttribute("class", "feather feather-x");
+import {ToDoItem, Project, todayCategory, upcomingCategory, completedCategory} from "./logic";
 
-    // Create first line (diagonal from top right to bottom left)
-    const line1 = document.createElementNS("http://www.w3.org/2000/svg", "line");
-    line1.setAttribute("x1", "18");
-    line1.setAttribute("y1", "6");
-    line1.setAttribute("x2", "6");
-    line1.setAttribute("y2", "18");
+let projectMap = new Map();
 
-    // Create second line (diagonal from top left to bottom right)
-    const line2 = document.createElementNS("http://www.w3.org/2000/svg", "line");
-    line2.setAttribute("x1", "6");
-    line2.setAttribute("y1", "6");
-    line2.setAttribute("x2", "18");
-    line2.setAttribute("y2", "18");
-
-    // Append lines to SVG
-    svg.appendChild(line1);
-    svg.appendChild(line2);
-
-    return svg;
-}
-
-function createListIcon() {
-    const svgNS = "http://www.w3.org/2000/svg";
-
-    const svg = document.createElementNS(svgNS, "svg");
-    svg.setAttribute("xmlns", svgNS);
-    svg.setAttribute("width", "24");
-    svg.setAttribute("height", "24");
-    svg.setAttribute("viewBox", "0 0 24 24");
-    svg.setAttribute("fill", "none");
-    svg.setAttribute("stroke", "currentColor");
-    svg.setAttribute("stroke-width", "2");
-    svg.setAttribute("stroke-linecap", "round");
-    svg.setAttribute("stroke-linejoin", "round");
-    svg.classList.add("feather", "feather-list");
-
-    // Function to create lines
-    function createLine(x1, y1, x2, y2) {
-        const line = document.createElementNS(svgNS, "line");
-        line.setAttribute("x1", x1);
-        line.setAttribute("y1", y1);
-        line.setAttribute("x2", x2);
-        line.setAttribute("y2", y2);
-        svg.appendChild(line);
+// On start
+if (localStorage.hasOwnProperty("projectMap")) {
+    projectMap = new Map(JSON.parse(localStorage.getItem("projectMap")));
+    for (const [projectName, project] of projectMap){
+        listProject(project);
     }
-
-    // Creating horizontal list lines
-    createLine(8, 6, 21, 6);
-    createLine(8, 12, 21, 12);
-    createLine(8, 18, 21, 18);
-
-    // Creating small dots on the left
-    createLine(3, 6, 3.01, 6);
-    createLine(3, 12, 3.01, 12);
-    createLine(3, 18, 3.01, 18);
-
-    return svg;
 }
+
+let currentProject;
 
 // Sidebar functionality
 
@@ -81,33 +23,51 @@ const todayButton = document.querySelector(".todos-today");
 const upcomingButton = document.querySelector(".todos-today");
 const completedButton = document.querySelector(".todos-today");
 
-function showToday() {
+function displayCategory(category) {
+    if (category == "today") {
 
+    }
+    else if (category == "upcoming") {
+
+    }
+    else if (category == "completed") {
+
+    }
 }
 
-function showUpcoming() {
-    
-}
-
-function showCompleted() {
-    
-}
-
-function createProject(name) {
+function listProject(project) {
     const projectsContainer = document.querySelector(".projects-container");
-    const project = document.createElement("div");
-    project.classList.add("project");
+    const projectDiv = document.createElement("div");
+    projectDiv.classList.add("project");
     const projectName = document.createElement("h3");
-    projectName.textContent = name;
+    projectName.textContent = project.name;
 
-    projectsContainer.appendChild(createListIcon());
-    projectsContainer.appendChild(projectName);
+    projectDiv.appendChild(createListIcon());
+    projectDiv.appendChild(projectName);
+
+    projectsContainer.appendChild(projectDiv);
+
+    projectDiv.addEventListener("click", () => {
+        currentProject = project;
+        displayProject(project);
+    })
 }
 
-function createToDo(todoItem) {
+function createProject(project) {
+
+    // first list project in sidebar
+    listProject(project);
+
+    // add project to local storage
+    projectMap.set(project.name, project);
+    localStorage.setItem("projectMap", JSON.stringify(Array.from(projectMap.entries())));
+}
+
+function displayToDo(todoItem) {
     const todoContainer = document.querySelector(".todos-container");
     const todo = document.createElement("div");
     todo.classList.add("todo");
+
     if (todoItem.priority == "high") {
         todo.classList.add("priority-high");
     }
@@ -135,7 +95,7 @@ function createToDo(todoItem) {
     const todoDetails = document.createElement("div");
     todoDetails.classList.add("todo-details");
     const todoDetailsText = document.createElement("p");
-    todoDetailsText = "Details";
+    todoDetailsText.textContent = "Details";
     todoDetails.appendChild(todoDetailsText);
     const xSVG = createXSVG();
 
@@ -151,42 +111,105 @@ function createToDo(todoItem) {
     todo.appendChild(todoRight);
 
     todoContainer.appendChild(todo);
+
+    // Event handlers
+    todoCheckBox.addEventListener("click", (event) => {
+        event.preventDefault();
+    })
 }
 
-function showToDoItems(todoList) {
-    for (todoItem of todoList) {
+function displayProject(project) {
+    const todoContainer = document.querySelector(".todos-container")
+    todoContainer.innerHTML = "";
+    const projectHeading = document.querySelector(".project-name h1");
+    projectHeading.textContent = project.name;
+
+    for (const todoItem of project.todos) {
+        displayToDo(todoItem);
     }
 }
 
 // Event Listeners
 
+let sidebarIsOpen = true;
 const sidebarButton = document.querySelector(".sidebar-header svg");
 sidebarButton.addEventListener("click", () => {
+    if (sidebarIsOpen) {
 
+    }
 })
 
 // Create Project Functionality
-const createProjectButton = document.querySelector(".projects-header svg")
+const openCreateProjectButton = document.querySelector(".projects-header svg")
 
-const createProjectDialog = document.querySelector(".project-dialog")
-createProjectButton.addEventListener("click", () => {
-    createProjectDialog.showModal()
+const ProjectDialog = document.querySelector(".project-dialog")
+openCreateProjectButton.addEventListener("click", () => {
+    ProjectDialog.showModal()
 })
 
 const closeProjectButton = document.querySelector(".project-dialog svg");
 closeProjectButton.addEventListener("click", () => {
-    createProjectDialog.close();
+    ProjectDialog.close();
+})
+
+const createProjectButton = document.querySelector(".create-project button");
+createProjectButton.addEventListener("click", (event) => {
+    event.preventDefault();
+
+    const projectNameInput = document.querySelector(".project-dialog #project-name");
+    const projectName = projectNameInput.value;
+    let project = new Project(projectName);
+    createProject(project);
+    ProjectDialog.close();
 })
 
 // Create ToDo Functionality
 const todoDialog = document.querySelector(".todo-dialog")
 
-const createToDoButton = document.querySelector(".add-todo");
-createToDoButton.addEventListener("click", () => {
+const openCreateToDoButton = document.querySelector(".add-todo");
+openCreateToDoButton.addEventListener("click", () => {
     todoDialog.showModal()
 })
 
 const closeToDoButton = document.querySelector(".todo-dialog svg");
 closeToDoButton.addEventListener("click", () => {
+    todoDialog.close();
+})
+
+const createToDoButton = document.querySelector(".create-todo button");
+createToDoButton.addEventListener("click", (event) => {
+    event.preventDefault();
+
+    const todoNameInput = document.getElementById("todo-name");
+    const todoDateInput = document.getElementById("due-date");
+    const todoDetailsInput = document.getElementById("todo-details");
+
+    const todoName = todoNameInput.value;
+    const todoDate = todoDateInput.value;
+    const todoDetails = todoDetailsInput.value;
+
+    const lowPriority = document.getElementById("priority-low");
+    const mediumPriority = document.getElementById("priority-medium");
+    const highPriority = document.getElementById("priority-high");
+
+    let selectedPriority;
+
+    // Check for priority
+    if (lowPriority.checked) {
+        selectedPriority = "low";
+    }
+    else if (mediumPriority.checked) {
+        selectedPriority = "medium";
+    }
+    else if (highPriority.checked) {
+        selectedPriority = "high";
+    }
+    
+    let todoItem = new ToDoItem(todoName, todoDate, todoDetails, selectedPriority);
+    currentProject.todos.push(todoItem);
+    projectMap.set(currentProject.name, currentProject);
+    localStorage.setItem("projectMap", JSON.stringify(Array.from(projectMap)));
+    displayToDo(todoItem);
+
     todoDialog.close();
 })

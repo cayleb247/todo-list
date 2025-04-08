@@ -76,6 +76,12 @@ h1, h2, h3, p, label, legend, input, textarea, button {
     stroke: rgb(171, 171, 171);
 }
 
+.projects-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
 .categories-container {
     display: flex;
     flex-direction: column;
@@ -115,6 +121,7 @@ h1, h2, h3, p, label, legend, input, textarea, button {
 
 .add-todo {
     display: flex;
+    justify-content: center;
     align-items: center;
     cursor: pointer;
     transition: color 0.3s ease-in-out
@@ -176,6 +183,14 @@ h1, h2, h3, p, label, legend, input, textarea, button {
     border-left: 0.5rem solid #bd352d;
 }
 
+.todo.priority-medium {
+    border-left: 0.5rem solid #bda52d;
+}
+
+.todo.priority-low {
+    border-left: 0.5rem solid #6ebd2d;
+}
+
 .todo-left, .todo-right {
     display: flex;
     align-items: center;
@@ -229,6 +244,8 @@ h1, h2, h3, p, label, legend, input, textarea, button {
 }
 
 .create-todo textarea, .create-project textarea {
+    box-sizing: border-box;
+    padding: 0.5rem;
     height: 6rem;
     width: 100%;
     border: 1px solid grey;

@@ -1,5 +1,3 @@
-
-
 class ToDoItem {
     constructor(name, date, details, priority) {
         this.name = name;
@@ -23,10 +21,8 @@ class Project {
     }
 }
 
-// function createToDo(name, date, details, priority) {
-//     return new todoItem(name, date, details, priority)
-// }
+let todayCategory = [];
+let upcomingCategory = [];
+let completedCategory = [];
 
-// function createProject(name)
-
-export {ToDoItem, Project}
+export {ToDoItem, Project, todayCategory, upcomingCategory, completedCategory}
