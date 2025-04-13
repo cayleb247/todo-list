@@ -4,7 +4,7 @@ import { createXSVG, createListIcon } from "./create-svg";
 
 import {ToDoItem, Project, todayCategory, upcomingCategory, completedCategory} from "./logic";
 
-import { isToday, format } from "date-fns";
+import { parseISO, format } from "date-fns";
 
 let projectMap = new Map();
 
@@ -198,7 +198,7 @@ createToDoButton.addEventListener("click", (event) => {
     const todoDetailsInput = document.getElementById("todo-details");
 
     const todoName = todoNameInput.value;
-    const todoDate = todoDateInput.value;
+    const todoDate = format(parseISO(todoDateInput.value), "MM/dd/yyyy");
     const todoDetails = todoDetailsInput.value;
 
     const lowPriority = document.getElementById("priority-low");
