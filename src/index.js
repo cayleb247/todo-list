@@ -4,6 +4,8 @@ import { createXSVG, createListIcon } from "./create-svg";
 
 import {ToDoItem, Project, todayCategory, upcomingCategory, completedCategory} from "./logic";
 
+import { isToday, format } from "date-fns";
+
 let projectMap = new Map();
 
 // On start
@@ -158,9 +160,18 @@ createProjectButton.addEventListener("click", (event) => {
 
     const projectNameInput = document.querySelector(".project-dialog #project-name");
     const projectName = projectNameInput.value;
-    let project = new Project(projectName);
-    createProject(project);
-    ProjectDialog.close();
+    const projectNameForm = document.querySelector(".project-dialog form")
+    const usedProjectName = document.querySelector(".project-dialog p");
+
+    if (!projectMap.has(projectName)) {
+        let project = new Project(projectName);
+        createProject(project);
+        usedProjectName.textContent = "";
+        ProjectDialog.close();
+        projectNameForm.reset();
+    } else {
+        usedProjectName.textContent = "project name already used";
+    }
 })
 
 // Create ToDo Functionality
@@ -179,6 +190,8 @@ closeToDoButton.addEventListener("click", () => {
 const createToDoButton = document.querySelector(".create-todo button");
 createToDoButton.addEventListener("click", (event) => {
     event.preventDefault();
+
+    const createToDoForm = document.querySelector(".create-todo form")
 
     const todoNameInput = document.getElementById("todo-name");
     const todoDateInput = document.getElementById("due-date");
@@ -212,4 +225,6 @@ createToDoButton.addEventListener("click", (event) => {
     displayToDo(todoItem);
 
     todoDialog.close();
+
+    createToDoForm.reset();
 })

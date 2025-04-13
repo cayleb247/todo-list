@@ -107,6 +107,9 @@ h1, h2, h3, p, label, legend, input, textarea, button {
 }
 
 .project-name {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     box-sizing: border-box;
     padding: 2rem;
 
@@ -218,6 +221,12 @@ h1, h2, h3, p, label, legend, input, textarea, button {
     stroke: rgb(171, 171, 171);
 }
 
+.project-dialog p {
+    font-style: italic;
+    color: red;
+    margin-bottom: 0.5rem;
+}
+
 .create-todo, .create-project {
     width: 18rem;
     box-sizing: border-box;
@@ -240,7 +249,7 @@ h1, h2, h3, p, label, legend, input, textarea, button {
     border-radius: 1rem;
     border: 1px solid grey;
     padding: 0.25rem 0.5rem 0.25rem 0.5rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.25rem;
 }
 
 .create-todo textarea, .create-project textarea {
@@ -251,7 +260,7 @@ h1, h2, h3, p, label, legend, input, textarea, button {
     border: 1px solid grey;
     border-radius: 0.5rem;
     resize: none;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.25rem;
 }
 
 .create-todo button, .create-project button {
@@ -271,6 +280,7 @@ h1, h2, h3, p, label, legend, input, textarea, button {
 .create-todo fieldset, .create-project fieldset {
     border: none;
     text-align: center;
+    margin-top: 0.25rem;
 }
 
 .priority-inputs {
