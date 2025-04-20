@@ -148,6 +148,10 @@ h1, h2, h3, p, label, legend, input, textarea, button {
     justify-content: space-between;
 }
 
+.todo-completed {
+    text-decoration-line: line-through;
+}
+
 .todo-checkbox {
     border: 0.125rem solid #62554d;
     height: 0.75rem;

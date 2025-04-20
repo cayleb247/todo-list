@@ -6,9 +6,6 @@ class ToDoItem {
         this.priority = priority;
         this.completed = false;
     }
-    completeToDo() {
-        this.completed = true;
-    }
 }
 
 class Project {
@@ -16,13 +13,10 @@ class Project {
         this.name = name;
         this.todos = [];
     }
-    addToDo(todo) {
-        this.todos.push(todo)
-    }
 }
 
-let todayCategory = [];
-let upcomingCategory = [];
-let completedCategory = [];
+let todayCategoryList = [];
+let upcomingCategoryList = [];
+let completedCategoryList = [];
 
-export {ToDoItem, Project, todayCategory, upcomingCategory, completedCategory}
+export {ToDoItem, Project, todayCategoryList, upcomingCategoryList, completedCategoryList}

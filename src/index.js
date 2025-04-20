@@ -2,19 +2,54 @@ import "./styles.css";
 
 import { createXSVG, createListIcon } from "./create-svg";
 
-import {ToDoItem, Project, todayCategory, upcomingCategory, completedCategory} from "./logic";
+import {ToDoItem, Project, todayCategoryList, upcomingCategoryList, completedCategoryList} from "./logic";
 
-import { parseISO, format } from "date-fns";
+import { parseISO, format, isToday, isFuture } from "date-fns";
 
 let projectMap = new Map();
 
 // On start
+
 if (localStorage.hasOwnProperty("projectMap")) {
     projectMap = new Map(JSON.parse(localStorage.getItem("projectMap")));
     for (const [projectName, project] of projectMap){
         listProject(project);
+        for (const todo of project.todos) {
+            if (todo.completed){ // check if todo is completed
+                completedCategoryList.push(todo);
+            }
+            else {
+                if (todo.date) { // check if todo has a date
+                    if (isToday(todo.date)) {
+                        todayCategoryList.push(todo);
+                    }
+                    else if (isFuture(todo.date)) {
+                        upcomingCategoryList.push(todo);
+                    }
+                }
+            }
+        }
     }
 }
+console.log(projectMap);
+
+
+const todayCategory = document.querySelector(".todos-today");
+const upcomingCategory = document.querySelector(".todos-upcoming");
+const completedCategory = document.querySelector(".todos-completed");
+
+todayCategory.addEventListener("click", () => {
+    displayCategory("today");
+    for (const todo of todayCategoryList) {
+
+    }
+})
+upcomingCategory.addEventListener("click", () => {
+    displayCategory("upcoming")
+})
+completedCategory.addEventListener("click", () => {
+    displayCategory("completed")
+})
 
 let currentProject;
 
@@ -26,14 +61,22 @@ const upcomingButton = document.querySelector(".todos-today");
 const completedButton = document.querySelector(".todos-today");
 
 function displayCategory(category) {
-    if (category == "today") {
 
+    const todoContainer = document.querySelector(".todos-container");
+    todoContainer.innerHTML = "";
+    const categoryHeading = document.querySelector(".project-name h1");
+
+    const addToDo = document.querySelector(".add-todo");
+    addToDo.style.display = "none";
+
+    if (category == "today") {
+        categoryHeading.textContent = "Today";
     }
     else if (category == "upcoming") {
-
+        categoryHeading.textContent = "Upcoming";
     }
     else if (category == "completed") {
-
+        categoryHeading.textContent = "Completed";
     }
 }
 
@@ -116,6 +159,11 @@ function displayToDo(todoItem) {
 
     // Event handlers
     todoCheckBox.addEventListener("click", (event) => {
+        
+        todoItem.completed = true;
+        projectMap.set(currentProject.name, currentProject);
+        localStorage.setItem("projectMap", JSON.stringify(Array.from(projectMap)));
+
         event.preventDefault();
     })
 }
@@ -126,8 +174,14 @@ function displayProject(project) {
     const projectHeading = document.querySelector(".project-name h1");
     projectHeading.textContent = project.name;
 
+    const addToDo = document.querySelector(".add-todo");
+    addToDo.style.display = "flex";
+
     for (const todoItem of project.todos) {
-        displayToDo(todoItem);
+        console.log(todoItem);
+        if (!todoItem.completed){
+            displayToDo(todoItem);
+        }
     }
 }
 
@@ -217,7 +271,7 @@ createToDoButton.addEventListener("click", (event) => {
     else if (highPriority.checked) {
         selectedPriority = "high";
     }
-    
+
     let todoItem = new ToDoItem(todoName, todoDate, todoDetails, selectedPriority);
     currentProject.todos.push(todoItem);
     projectMap.set(currentProject.name, currentProject);
