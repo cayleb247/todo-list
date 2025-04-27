@@ -1,6 +1,6 @@
 import "./styles.css";
 
-import { createXSVG, createListIcon } from "./create-svg";
+import { createXSVG, createListIcon, createCheckIcon } from "./create-svg";
 
 import {ToDoItem, Project, todayCategoryList, upcomingCategoryList, completedCategoryList} from "./logic";
 
@@ -31,34 +31,54 @@ if (localStorage.hasOwnProperty("projectMap")) {
         }
     }
 }
-console.log(projectMap);
 
+displayCategory("today");
+
+let currentProject;
+
+// Sidebar functionality
+
+const showSidebar = document.querySelector(".sidebar-header svg");
 
 const todayCategory = document.querySelector(".todos-today");
 const upcomingCategory = document.querySelector(".todos-upcoming");
 const completedCategory = document.querySelector(".todos-completed");
 
 todayCategory.addEventListener("click", () => {
+    updateCategoryLists();
     displayCategory("today");
-    for (const todo of todayCategoryList) {
-
-    }
 })
 upcomingCategory.addEventListener("click", () => {
-    displayCategory("upcoming")
+    updateCategoryLists();
+    displayCategory("upcoming");
 })
 completedCategory.addEventListener("click", () => {
-    displayCategory("completed")
+    updateCategoryLists();
+    displayCategory("completed");
 })
 
-let currentProject;
-
-// Sidebar functionality
-
-const showSidebar = document.querySelector(".sidebar-header svg")
-const todayButton = document.querySelector(".todos-today");
-const upcomingButton = document.querySelector(".todos-today");
-const completedButton = document.querySelector(".todos-today");
+function updateCategoryLists() {
+    todayCategoryList.length = 0;
+    upcomingCategoryList.length = 0;
+    completedCategoryList.length = 0;
+    for (const [projectName, project] of projectMap){
+        for (const todo of project.todos) {
+            if (todo.completed){ // check if todo is completed
+                completedCategoryList.push(todo);
+            }
+            else {
+                if (todo.date) { // check if todo has a date
+                    if (isToday(todo.date)) {
+                        todayCategoryList.push(todo);
+                    }
+                    else if (isFuture(todo.date)) {
+                        upcomingCategoryList.push(todo);
+                    }
+                }
+            }
+        }
+    }
+}
 
 function displayCategory(category) {
 
@@ -71,12 +91,21 @@ function displayCategory(category) {
 
     if (category == "today") {
         categoryHeading.textContent = "Today";
+        for (const todo of todayCategoryList) {
+            displayToDo(todo);
+        }
     }
     else if (category == "upcoming") {
         categoryHeading.textContent = "Upcoming";
+        for (const todo of upcomingCategoryList) {
+            displayToDo(todo);
+        }
     }
     else if (category == "completed") {
         categoryHeading.textContent = "Completed";
+        for (const todo of completedCategoryList) {
+            displayToDo(todo);
+        }
     }
 }
 
@@ -159,12 +188,30 @@ function displayToDo(todoItem) {
 
     // Event handlers
     todoCheckBox.addEventListener("click", (event) => {
-        
-        todoItem.completed = true;
+        const checkSVG = createCheckIcon();
+        if (!todoCheckBox.hasChildNodes()) {
+            todoCheckBox.appendChild(checkSVG);
+        }
+        else {
+            todoCheckBox.innerHTML = "";
+        }
+        if (!todo.classList.contains("completed")) {
+            todo.classList.add("completed");
+        }
+        else {
+            todo.classList.remove("completed");
+        }
+        todoItem.completed = !todoItem.completed;
         projectMap.set(currentProject.name, currentProject);
         localStorage.setItem("projectMap", JSON.stringify(Array.from(projectMap)));
 
         event.preventDefault();
+    })
+
+    todoDetails.addEventListener("click", () => {
+        const detailsDialogText = document.querySelector(".details-dialog p");
+        detailsDialogText.textContent = todoItem.details;
+        detailsDialog.showModal();
     })
 }
 
@@ -252,7 +299,12 @@ createToDoButton.addEventListener("click", (event) => {
     const todoDetailsInput = document.getElementById("todo-details");
 
     const todoName = todoNameInput.value;
-    const todoDate = format(parseISO(todoDateInput.value), "MM/dd/yyyy");
+    let todoDate;
+
+    if (todoDateInput.value) {
+        todoDate = format(parseISO(todoDateInput.value), "MM/dd/yyyy");
+    }
+
     const todoDetails = todoDetailsInput.value;
 
     const lowPriority = document.getElementById("priority-low");
@@ -282,3 +334,14 @@ createToDoButton.addEventListener("click", (event) => {
 
     createToDoForm.reset();
 })
+
+// Create Details Functionality
+
+const detailsDialog = document.querySelector(".details-dialog");
+const closeDetails = document.querySelector(".details-dialog svg");
+
+closeDetails.addEventListener("click", () => {
+    detailsDialog.close();
+})
+
+// Delete ToDos
