@@ -32,9 +32,11 @@ if (localStorage.hasOwnProperty("projectMap")) {
     }
 }
 
-displayCategory("today");
-
 let currentProject;
+let categorySelected;
+let currentCategory;
+
+displayCategory("today");
 
 // Sidebar functionality
 
@@ -45,14 +47,20 @@ const upcomingCategory = document.querySelector(".todos-upcoming");
 const completedCategory = document.querySelector(".todos-completed");
 
 todayCategory.addEventListener("click", () => {
+    categorySelected = true;
+    currentCategory = "today";
     updateCategoryLists();
     displayCategory("today");
 })
 upcomingCategory.addEventListener("click", () => {
+    categorySelected = true;
+    currentCategory = "upcoming";
     updateCategoryLists();
     displayCategory("upcoming");
 })
 completedCategory.addEventListener("click", () => {
+    categorySelected = true;
+    currentCategory = "completed";
     updateCategoryLists();
     displayCategory("completed");
 })
@@ -107,6 +115,7 @@ function displayCategory(category) {
             displayToDo(todo);
         }
     }
+    document.querySelector(".content > svg").style.display = "none";
 }
 
 function listProject(project) {
@@ -123,6 +132,7 @@ function listProject(project) {
 
     projectDiv.addEventListener("click", () => {
         currentProject = project;
+        categorySelected = false;
         displayProject(project);
     })
 }
@@ -213,10 +223,26 @@ function displayToDo(todoItem) {
         detailsDialogText.textContent = todoItem.details;
         detailsDialog.showModal();
     })
+    
+    xSVG.addEventListener("click", () => {
+        currentProject.todos = currentProject.todos.filter(todo => todo !== todoItem); // return only the todos that isn't the one in argument (deleting it)
+        projectMap.set(currentProject.name, currentProject);
+        localStorage.setItem("projectMap", JSON.stringify(Array.from(projectMap)));
+
+        if (categorySelected) {
+            updateCategoryLists();
+            displayCategory(currentCategory);
+        }
+        else {
+            displayProject(currentProject);
+        }
+    })
 }
 
 function displayProject(project) {
-    const todoContainer = document.querySelector(".todos-container")
+    document.querySelector(".content > svg").style.display = "block";
+
+    const todoContainer = document.querySelector(".todos-container");
     todoContainer.innerHTML = "";
     const projectHeading = document.querySelector(".project-name h1");
     projectHeading.textContent = project.name;
@@ -345,3 +371,21 @@ closeDetails.addEventListener("click", () => {
 })
 
 // Delete ToDos
+
+// Delete Project
+
+document.querySelector(".content > svg").addEventListener("click", () => {
+    console.log(projectMap);
+    console.log(currentProject);
+
+    projectMap.delete(currentProject.name);
+    localStorage.setItem("projectMap", JSON.stringify(Array.from(projectMap)));
+    const projectsContainer = document.querySelector(".projects-container");
+    projectsContainer.innerHTML = "";
+    for (const [projectName, project] of projectMap){
+        listProject(project);
+    }
+    displayCategory("today");
+})
+
+

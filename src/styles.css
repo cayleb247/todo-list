@@ -115,6 +115,22 @@ h1, h2, h3, p, label, legend, input, textarea, button {
 
 }
 
+.content > svg {
+    position: absolute;
+    
+    top: 2.25rem;
+    right: 2.25rem;
+    transition: stroke 0.2s ease-in-out;
+}
+
+.content > svg:hover {
+    position: absolute;
+    top: 2.25rem;
+    right: 2.25rem;
+    stroke: rgb(171, 171, 171);
+    cursor: pointer;
+}
+
 .todos-container {
     width: 100%;
     display: flex;
